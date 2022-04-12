@@ -1,0 +1,22 @@
+<a
+  nz-dropdown
+  nzTrigger="click"
+  nzPlacement="bottomRight"
+  [nzClickHide]="false"
+  [nzDropdownMenu]="menu"
+>
+  <i class="settings-cog" nz-icon [nzSpin]="isLoading" nzType="setting"></i>
+</a>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item *ngIf="isMenuOpen && !settings.loggedIn">
+      <firebase-ui></firebase-ui>
+    </li>
+    <li nz-menu-item *ngIf="settings.loggedIn" (click)="logOut()">
+      {{ "Logout" | nzI18n }}
+    </li>
+    <!--    <li nz-menu-divider></li>-->
+    <!--      <firebase-ui></firebase-ui>-->
+    <!--    </li>-->
+  </ul>
+</nz-dropdown-menu>

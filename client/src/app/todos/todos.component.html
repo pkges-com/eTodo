@@ -1,0 +1,48 @@
+<nz-list
+  nzSize="small"
+  cdkDropList
+  [nzBordered]="true"
+  (cdkDropListDropped)="drop($event)"
+>
+  <nz-list-header>
+    <input
+      nz-input
+      placeholder="What would you like to do today?"
+      [nzBorderless]="true"
+      (keydown)="addTodo($event)"
+    />
+  </nz-list-header>
+  <nz-list-item
+    cdkDrag
+    [class.editing]="todo.editing"
+    *ngFor="let todo of todos"
+  >
+    <nz-row
+      class="todo-row"
+      [class.completed]="todo.completed"
+      (dblclick)="!todo.editing && toggleEdit(todo)"
+    >
+      <div class="label-spacing">
+        <label
+          class="toggle-completed"
+          type="checkbox"
+          nz-checkbox
+          [ngModel]="todo.completed"
+          (ngModelChange)="toggleCompleted(todo, $event)"
+        ></label>
+      </div>
+      <span *ngIf="!todo.editing; else editTodoInput">{{ todo.title }}</span>
+      <ng-template #editTodoInput>
+        <input
+          class="edit-todo"
+          autofocus
+          nz-input
+          [nzBorderless]="true"
+          (keydown)="editTodo(todo, $event)"
+          (blur)="toggleEdit(todo)"
+          [(ngModel)]="todo.title"
+        />
+      </ng-template>
+    </nz-row>
+  </nz-list-item>
+</nz-list>
