@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: ng build
+      - run: npm i && ng build
         working-directory: client
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
