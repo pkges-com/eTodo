@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { TodosService } from './todos.service';
+import { SettingsService } from '../settings/settings.service';
 import { Todo } from './utils/types';
 
 @Component({
@@ -10,19 +11,29 @@ import { Todo } from './utils/types';
   styleUrls: ['./todos.component.scss'],
 })
 export class TodosComponent implements OnInit {
-  todos: Todo[] = [];
+  todos: Todo[] = this.todosService.getTodos();
 
-  constructor(protected todosService: TodosService) {}
+  constructor(
+    protected todosService: TodosService,
+    protected settingsService: SettingsService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.settingsService.isUserLogged$.subscribe((isLogged) => {
+      console.log(`isLogged: ${isLogged}`);
+      if (isLogged) {
+        this.todosService.syncTodos();
+      }
+    });
+  }
 
-  addTodo(event: KeyboardEvent): void {
+  async addTodo(event: KeyboardEvent): Promise<void> {
     if (
       event.target instanceof HTMLInputElement &&
       event.key === 'Enter' &&
       event.target.value.trim() !== ''
     ) {
-      this.todosService.addTodo(event.target.value.trim());
+      await this.todosService.addTodo(event.target.value.trim());
       event.target.value = '';
     }
   }
@@ -43,6 +54,6 @@ export class TodosComponent implements OnInit {
   }
 
   drop({ previousIndex, currentIndex }: CdkDragDrop<string[]>) {
-    moveItemInArray(this.todos, previousIndex, currentIndex);
+    this.todosService.reorderTodos(previousIndex, currentIndex);
   }
 }

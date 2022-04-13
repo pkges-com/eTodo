@@ -1,10 +1,11 @@
+import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Settings } from './utils/types';
-import { UtilsService } from '../core/utils.service';
 
 @Injectable()
 export class SettingsService {
   private readonly settings!: Settings;
+  isUserLogged$ = new BehaviorSubject(false);
 
   constructor() {
     const localSettings = localStorage.getItem('settings');
@@ -16,6 +17,7 @@ export class SettingsService {
   setUser(user: Settings['user']) {
     this.settings.user = user;
     this.settings.loggedIn = !!user;
+    this.isUserLogged$.next(this.settings.loggedIn);
   }
 
   getSettings(): Settings {

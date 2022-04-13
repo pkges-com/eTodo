@@ -9,6 +9,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { StorageService } from '../core/utils/storage.service';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
     NzGridModule,
   ],
   declarations: [TodosComponent],
-  providers: [TodosService],
+  providers: [TodosService, StorageService],
   exports: [TodosComponent],
 })
 export class TodosModule {}

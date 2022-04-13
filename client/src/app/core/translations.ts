@@ -12,6 +12,7 @@ export const cusomTranslationEn = {
   },
   Todos: {
     todos: 'Todos',
+    input_placeholder: 'What needs to be done?',
   },
 };
 
@@ -22,5 +23,6 @@ export const cusomTranslationHe = {
   },
   Todos: {
     todos: 'משימות',
+    input_placeholder: 'מה תרצה לעשות היום?',
   },
 };

@@ -1,7 +1,7 @@
 import { Language } from '../../core/translations';
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;

@@ -7,7 +7,7 @@
   <nz-list-header>
     <input
       nz-input
-      placeholder="What would you like to do today?"
+      placeholder="{{ 'Todos.input_placeholder' | nzI18n }}"
       [nzBorderless]="true"
       (keydown)="addTodo($event)"
     />

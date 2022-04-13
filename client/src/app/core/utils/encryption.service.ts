@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class EncryptionService {
-  private key = this.randomBytes(5);
+  private key = '';
 
   getKey() {
     return this.key;
@@ -15,11 +15,13 @@ export class EncryptionService {
   }
 
   encrypt(value: string) {
-    return cryptoJs.AES.encrypt(value, this.key).toString();
+    return this.key ? cryptoJs.AES.encrypt(value, this.key).toString() : value;
   }
 
   decrypt(value: string) {
-    return cryptoJs.AES.decrypt(value, this.key).toString(cryptoJs.enc.Utf8);
+    return this.key
+      ? cryptoJs.AES.decrypt(value, this.key).toString(cryptoJs.enc.Utf8)
+      : value;
   }
 
   randomBytes(length: number) {
