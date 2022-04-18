@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class EncryptionService {
-  private key = '';
+  private readonly keyName = 'key';
+  private key = localStorage.getItem(this.keyName) ?? '';
 
   getKey() {
     return this.key;
@@ -12,6 +13,7 @@ export class EncryptionService {
 
   updateKey(key: string) {
     this.key = key;
+    localStorage.setItem(this.keyName, key);
   }
 
   encrypt(value: string) {
@@ -22,6 +24,10 @@ export class EncryptionService {
     return this.key
       ? cryptoJs.AES.decrypt(value, this.key).toString(cryptoJs.enc.Utf8)
       : value;
+  }
+
+  needToUpdateKey(challenge: string): boolean {
+    return 'challenge' !== this.decrypt(challenge);
   }
 
   randomBytes(length: number) {

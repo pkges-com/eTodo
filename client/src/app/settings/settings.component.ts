@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
-
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { SettingsService } from './settings.service';
-import { NzDropDownDirective } from 'ng-zorro-antd/dropdown';
 import { Subject, takeUntil } from 'rxjs';
+import { NzDropDownDirective } from 'ng-zorro-antd/dropdown';
+
+import { SettingsService } from './settings.service';
 
 @Component({
   selector: 'settings',
@@ -31,11 +31,6 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
-  }
-
   logOut(): void {
     this.isLoading = true;
     this.firebaseAuth.signOut().then(() => {
@@ -49,13 +44,18 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
         const userObj = user?.toJSON?.() as any;
 
         if (userObj) {
-          this.settingsService.setUser({
-            id: userObj.uid,
-            name: userObj.displayName,
-            email: userObj.email,
-            phone: userObj.phoneNumber,
-            isAdmin: false,
-          });
+          this.settingsService.setUser(
+            JSON.parse(
+              // Remove undefined values
+              JSON.stringify({
+                id: userObj.uid,
+                name: userObj.displayName,
+                email: userObj.email,
+                phone: userObj.phoneNumber,
+                isAdmin: false,
+              })
+            )
+          );
         } else {
           this.settingsService.setUser(null);
         }
@@ -73,5 +73,10 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
 
   get settings() {
     return this.settingsService.getSettings();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 }

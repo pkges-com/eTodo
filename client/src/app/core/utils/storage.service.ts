@@ -9,12 +9,14 @@ export class StorageService {
     private firebaseStorage: AngularFireStorage
   ) {}
 
-  async uploadRaw(path: string, file: string, hash: string) {
+  async uploadRaw(
+    path: string,
+    file: string,
+    metadata: Record<string, string> = {}
+  ) {
     await this.firebaseStorage.ref(path).putString(file, 'raw', {
       contentType: 'text/plain',
-      customMetadata: {
-        hash,
-      },
+      customMetadata: metadata,
     });
   }
 

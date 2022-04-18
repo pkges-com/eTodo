@@ -4,3 +4,12 @@
   width: 24px;
   height: 24px;
 }
+
+.settings-menu {
+  min-width: 240px;
+
+  .item-toggle {
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -12,5 +12,6 @@ export interface Settings {
   locale: Language;
   user: User | null;
   loggedIn: boolean;
+  challenge: string;
   darkMode: boolean;
 }

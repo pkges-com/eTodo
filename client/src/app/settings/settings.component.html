@@ -8,15 +8,21 @@
   <i class="settings-cog" nz-icon [nzSpin]="isLoading" nzType="setting"></i>
 </a>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul nz-menu>
+  <ul class="settings-menu" nz-menu>
     <li nz-menu-item *ngIf="isMenuOpen && !settings.loggedIn">
       <firebase-ui></firebase-ui>
     </li>
     <li nz-menu-item *ngIf="settings.loggedIn" (click)="logOut()">
       {{ "Logout" | nzI18n }}
     </li>
-    <!--    <li nz-menu-divider></li>-->
-    <!--      <firebase-ui></firebase-ui>-->
-    <!--    </li>-->
+    <li nz-menu-divider></li>
+    <li class="item-toggle" nz-menu-item>
+      <span>{{ "Settings.dark_mode" | nzI18n }}</span>
+      <nz-switch
+        disabled
+        nzSize="small"
+        [(ngModel)]="settings.darkMode"
+      ></nz-switch>
+    </li>
   </ul>
 </nz-dropdown-menu>
