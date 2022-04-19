@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5';
 import { Todo } from './utils/types';
 import { UtilsService } from '../core/utils.service';
+import { TodosErrors, FirebaseErrors } from '../core/errors';
 import { EncryptionService } from '../core/utils/encryption.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/utils/types';
@@ -85,13 +86,15 @@ export class TodosService {
       if (decryptedTodos) {
         existingTodos = JSON.parse(decryptedTodos);
       } else {
-        // Encrypted with different key, ask for the right one
-        await this.settingsService.syncSettingsFromDb();
-
-        return this.syncTodos$.next(); // Try again
+        throw new Error(TodosErrors.CantDecryptTodos);
       }
-    } catch {
-      // File Doesn't exist
+    } catch (error: any) {
+      if (
+        TodosErrors.CantDecryptTodos === error.message ||
+        FirebaseErrors.FileNotFound === error.code
+      ) {
+        await this.settingsService.syncSettingsFromDb();
+      }
     }
 
     const uniqueTodos = new Map();

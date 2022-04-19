@@ -11,6 +11,7 @@ import { UpdateKeyPopupComponent } from '../core/components/update-key-popup.com
 export class SettingsService {
   private readonly collection = 'settings';
   private readonly settings!: Settings;
+  private isOpen = false;
   isUserLogged$ = new BehaviorSubject(false);
 
   constructor(
@@ -48,17 +49,21 @@ export class SettingsService {
 
     if (this.settings.loggedIn) {
       try {
-        settingsFromDb = await this.db.get(
-          this.collection,
-          this.settings.user!.id as string
-        );
+        settingsFromDb =
+          (await this.db.get(
+            this.collection,
+            this.settings.user!.id as string
+          )) ?? this.settings;
       } catch (e) {
         // No settings on db yet, let's create them
-        await this.saveSettingsToDb();
         settingsFromDb = this.settings;
       }
+      await this.saveSettingsToDb();
 
-      if (this.encryption.needToUpdateKey(settingsFromDb.challenge)) {
+      if (
+        this.encryption.needToUpdateKey(settingsFromDb.challenge) &&
+        false === this.isOpen
+      ) {
         const { challenge } = await this.forceKeyUpdateModal(
           settingsFromDb.challenge
         );
@@ -70,6 +75,7 @@ export class SettingsService {
   }
 
   async forceKeyUpdateModal(challenge: string): Promise<{ challenge: string }> {
+    this.isOpen = true;
     return new Promise((resolve) => {
       const modal = this.modal.create({
         nzTitle: 'Challenge',
@@ -85,6 +91,7 @@ export class SettingsService {
       });
 
       modal.afterClose.subscribe((result) => {
+        this.isOpen = false;
         resolve(result);
       });
     });

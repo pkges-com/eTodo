@@ -27,7 +27,7 @@ export class EncryptionService {
   }
 
   needToUpdateKey(challenge: string): boolean {
-    return 'challenge' !== this.decrypt(challenge);
+    return !challenge || 'challenge' !== this.decrypt(challenge);
   }
 
   randomBytes(length: number) {
