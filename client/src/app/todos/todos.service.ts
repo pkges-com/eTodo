@@ -122,6 +122,11 @@ export class TodosService {
     this.backgroundSync = true;
   }
 
+  removeAndSyncLocally() {
+    this.todos.splice(0, this.todos.length);
+    this.saveTodosLocally();
+  }
+
   saveTodosLocally(): void {
     localStorage.setItem('todos', JSON.stringify(this.todos));
   }

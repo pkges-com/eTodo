@@ -23,6 +23,8 @@ export class TodosComponent implements OnInit {
       console.log(`isLogged: ${isLogged}`);
       if (isLogged) {
         this.todosService.syncTodos();
+      } else {
+        this.todosService.removeAndSyncLocally();
       }
     });
   }
