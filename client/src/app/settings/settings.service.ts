@@ -12,6 +12,7 @@ export class SettingsService {
   private readonly collection = 'settings';
   private readonly settings!: Settings;
   private isOpen = false;
+  private saveInProgress = false;
   isUserLogged$ = new BehaviorSubject(false);
 
   constructor(
@@ -98,12 +99,18 @@ export class SettingsService {
   }
 
   async saveSettingsToDb(): Promise<void> {
-    if (this.settings.loggedIn) {
-      return this.db.set(
-        this.collection,
-        this.settings.user!.id as string,
-        this.settings
-      );
+    if (this.settings.loggedIn && !this.saveInProgress) {
+      try {
+        this.saveInProgress = true;
+
+        return this.db.set(
+          this.collection,
+          this.settings.user!.id as string,
+          this.settings
+        );
+      } finally {
+        this.saveInProgress = false;
+      }
     }
   }
 

@@ -13,13 +13,9 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { BaseModule } from './core/base.module';
 import { TodosModule } from './todos/todos.module';
 import { environment } from '../environments/environment';
-import { firebase, firebaseui, FirebaseUIModule } from 'firebaseui-angular';
+import { firebase, FirebaseUIModule } from 'firebaseui-angular';
 import { AngularFireModule } from '@angular/fire/compat';
-import {
-  cusomTranslationEn,
-  cusomTranslationHe,
-  Language,
-} from './core/translations';
+import { getLocaleByLanguageCode } from './core/translations';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { SettingsModule } from './settings/settings.module';
 
@@ -56,14 +52,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     {
       provide: NZ_I18N,
       useFactory: (localId: string) => {
-        switch (localId) {
-          case Language.English:
-            return cusomTranslationEn;
-          case Language.Hebrew:
-            return cusomTranslationHe;
-          default:
-            return cusomTranslationHe;
-        }
+        return getLocaleByLanguageCode(localId);
       },
       deps: [LOCALE_ID],
     },

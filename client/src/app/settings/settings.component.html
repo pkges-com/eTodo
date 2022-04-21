@@ -8,21 +8,45 @@
   <i class="settings-cog" nz-icon [nzSpin]="isLoading" nzType="setting"></i>
 </a>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul class="settings-menu" nz-menu>
+  <ul class="settings-menu" nz-menu [dir]="direction">
     <li nz-menu-item *ngIf="isMenuOpen && !settings.loggedIn">
       <firebase-ui></firebase-ui>
     </li>
     <li nz-menu-item *ngIf="settings.loggedIn" (click)="logOut()">
-      {{ "Logout" | nzI18n }}
+      {{ "Settings.logout" | translate }}
     </li>
     <li nz-menu-divider></li>
     <li class="item-toggle" nz-menu-item>
-      <span>{{ "Settings.dark_mode" | nzI18n }}</span>
+      <span>{{ "Settings.dark_mode" | translate }}</span>
       <nz-switch
-        disabled
         nzSize="small"
         [(ngModel)]="settings.darkMode"
+        (ngModelChange)="updateTheme()"
       ></nz-switch>
+    </li>
+    <li class="item-toggle" nz-menu-item>
+      <span>{{ "Settings.language" | translate }}</span>
+      <a
+        nz-dropdown
+        nz-button
+        nzTrigger="click"
+        [nzDropdownMenu]="languageSelection"
+        dir="ltr"
+      >
+        {{ currentLocale }}
+        <i nz-icon nzType="down"></i>
+      </a>
+      <nz-dropdown-menu #languageSelection="nzDropdownMenu">
+        <ul nz-menu>
+          <li
+            *ngFor="let language of languageCodes"
+            nz-menu-item
+            (click)="toggleLanguage(language)"
+          >
+            {{ language }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
     </li>
   </ul>
 </nz-dropdown-menu>

@@ -4,4 +4,5 @@ export enum FirebaseErrors {
 
 export enum TodosErrors {
   CantDecryptTodos = 'CantDecryptTodos',
+  UnserializableTodos = 'Malformed UTF-8 data',
 }

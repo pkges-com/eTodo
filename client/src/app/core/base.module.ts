@@ -9,6 +9,7 @@ import { EncryptionService } from './utils/encryption.service';
 import { NzI18nModule } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { TranslationPipe } from './utils/translation.pipe';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzI18nModule,
     NzModalModule,
   ],
-  declarations: [AutofocusDirective],
+  declarations: [AutofocusDirective, TranslationPipe],
   providers: [UtilsService, EncryptionService],
   exports: [
     CommonModule,
@@ -27,6 +28,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     AutofocusDirective,
     NzI18nModule,
     NzIconModule,
+    TranslationPipe,
   ],
 })
 export class BaseModule {}

@@ -14,4 +14,5 @@ export interface Settings {
   loggedIn: boolean;
   challenge: string;
   darkMode: boolean;
+  rtl: boolean;
 }

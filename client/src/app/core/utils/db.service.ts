@@ -6,8 +6,12 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 export class DbService {
   constructor(private firestore: AngularFirestore) {}
 
-  async set(collection: string, key: string, payload: Record<string, any>) {
-    await this.firestore.collection(collection).doc(key).set(payload);
+  async set(
+    collection: string,
+    key: string,
+    payload: Record<string, any>
+  ): Promise<any> {
+    return this.firestore.collection(collection).doc(key).set(payload);
   }
 
   async get(collection: string, key: string): Promise<any> {

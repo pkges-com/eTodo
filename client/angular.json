@@ -30,13 +30,17 @@
               "src/favicon.ico",
               "src/assets",
               {
+                "glob": "*min.css",
+                "input": "../node_modules/ng-zorro-antd/",
+                "output": "/themes/"
+              },
+              {
                 "glob": "**/*",
                 "input": "../node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
               }
             ],
             "styles": [
-              "../node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "../node_modules/firebaseui/dist/firebaseui.css",
               "src/styles.scss",
               "src/variables.scss"

@@ -1,9 +1,22 @@
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  HostBinding,
+  OnDestroy,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Subject, takeUntil } from 'rxjs';
 import { NzDropDownDirective } from 'ng-zorro-antd/dropdown';
 
 import { SettingsService } from './settings.service';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
+import {
+  getLocaleByLanguageCode,
+  Language,
+  LanguageToDirection,
+} from '../core/translations';
 
 @Component({
   selector: 'settings',
@@ -12,13 +25,19 @@ import { SettingsService } from './settings.service';
 })
 export class SettingsComponent implements AfterViewInit, OnDestroy {
   @ViewChild(NzDropDownDirective) private dropdown!: NzDropDownDirective;
+  @HostBinding('dir') get direction(): string {
+    return this.settings.rtl ? 'rtl' : 'ltr';
+  }
   isMenuOpen = false;
   isLoading = false;
+  languageCodes = Object.values(Language);
+  themeStyleElement: HTMLLinkElement = document.createElement('link');
   private destroy$ = new Subject();
 
   constructor(
     private settingsService: SettingsService,
-    private firebaseAuth: AngularFireAuth
+    private firebaseAuth: AngularFireAuth,
+    private translationService: NzI18nService
   ) {}
 
   ngAfterViewInit(): void {
@@ -29,6 +48,23 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
       .subscribe((event) => {
         this.isMenuOpen = event;
       });
+
+    this.initSettings();
+
+    this.themeStyleElement.rel = 'stylesheet';
+    document.head.append(this.themeStyleElement);
+  }
+
+  changeLocale(): void {
+    this.translationService.setLocale(
+      getLocaleByLanguageCode(this.settings.locale)
+    );
+    this.onSettingsChange();
+  }
+
+  async onSettingsChange(): Promise<void> {
+    this.settingsService.saveSettingsLocally();
+    await this.settingsService.saveSettingsToDb();
   }
 
   logOut(): void {
@@ -73,6 +109,39 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
 
   get settings() {
     return this.settingsService.getSettings();
+  }
+
+  get currentLocale(): string {
+    return this.translationService.getLocale().locale;
+  }
+
+  toggleLanguage(language: Language): void {
+    this.settings.locale = language;
+    this.translationService.setLocale(getLocaleByLanguageCode(language));
+    this.settings.rtl = 'rtl' === LanguageToDirection[language];
+    this.updateDirection();
+    this.saveSettings();
+  }
+
+  updateTheme(): void {
+    this.themeStyleElement.href = `/themes/ng-zorro-antd${
+      this.settings.darkMode ? '.dark' : ''
+    }.min.css`;
+    this.saveSettings();
+  }
+
+  async initSettings(): Promise<void> {
+    this.toggleLanguage(this.settings.locale);
+    this.updateTheme();
+  }
+
+  saveSettings(): void {
+    this.settingsService.saveSettingsLocally();
+    this.settingsService.saveSettingsToDb();
+  }
+
+  updateDirection(): void {
+    document.body.dir = this.direction;
   }
 
   ngOnDestroy(): void {
