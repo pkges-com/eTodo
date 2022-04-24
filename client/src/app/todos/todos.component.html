@@ -45,4 +45,9 @@
       </ng-template>
     </nz-row>
   </nz-list-item>
+  <nz-list-item *ngIf="hasDoneTodos">
+    <button nz-button nzType="link" nzSize="small" (click)="clearCompleted()">
+      {{ "Todos.clear_completed" | translate }}
+    </button>
+  </nz-list-item>
 </nz-list>

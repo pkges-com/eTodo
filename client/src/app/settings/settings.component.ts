@@ -17,6 +17,7 @@ import {
   Language,
   LanguageToDirection,
 } from '../core/translations';
+import { EncryptionService } from '../core/utils/encryption.service';
 
 @Component({
   selector: 'settings',
@@ -37,7 +38,8 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
   constructor(
     private settingsService: SettingsService,
     private firebaseAuth: AngularFireAuth,
-    private translationService: NzI18nService
+    private translationService: NzI18nService,
+    private encryptionService: EncryptionService
   ) {}
 
   ngAfterViewInit(): void {
@@ -93,6 +95,7 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
             )
           );
         } else {
+          this.encryptionService.updateKey('');
           this.settingsService.setUser(null);
         }
       },

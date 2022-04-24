@@ -59,7 +59,7 @@ export class UpdateKeyPopupComponent {
   }
 
   async submitForm() {
-    let challenge = '';
+    let newChallenge = this.challenge ?? '';
     this.invalidMessage = '';
 
     if (3 > this.key.trim().length) {
@@ -69,17 +69,17 @@ export class UpdateKeyPopupComponent {
 
     this.encryption.updateKey(this.key);
 
-    if (this.challenge) {
-      const decription = this.encryption.decrypt(this.challenge);
+    if (newChallenge) {
+      const decription = this.encryption.decrypt(newChallenge);
       if ('challenge' !== decription) {
         this.invalidMessage = 'קוד לא תקין, נא לנסות שוב';
 
         return;
       }
     } else {
-      challenge = this.encryption.encrypt('challenge');
+      newChallenge = this.encryption.encrypt('challenge');
     }
 
-    this.modal.destroy({ challenge });
+    this.modal.destroy({ challenge: newChallenge });
   }
 }

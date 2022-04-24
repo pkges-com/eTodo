@@ -1,5 +1,11 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnInit } from '@angular/core';
+import {
+  BehaviorSubject,
+  first,
+  Observable,
+  Subject,
+  Subscription,
+} from 'rxjs';
 
 import { Settings } from './utils/types';
 import { DbService } from '../core/utils/db.service';
@@ -11,9 +17,15 @@ import { UpdateKeyPopupComponent } from '../core/components/update-key-popup.com
 export class SettingsService {
   private readonly collection = 'settings';
   private readonly settings!: Settings;
+  private isSynced$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  private updateSettings$: Subject<void> = new Subject();
   private isOpen = false;
   private saveInProgress = false;
-  isUserLogged$ = new BehaviorSubject(false);
+  readonly settingsReady$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+  isUserLogged$ = new BehaviorSubject<boolean | null>(null);
 
   constructor(
     private db: DbService,
@@ -26,8 +38,10 @@ export class SettingsService {
   setUser(user: Settings['user']) {
     this.settings.user = user;
     this.settings.loggedIn = !!user;
+    this.settings.challenge = user ? this.settings.challenge : '';
+    this.prepareSettingsUpdateHandler();
     this.saveSettingsLocally();
-    this.syncSettingsFromDb();
+    this.doSyncSettings();
     this.isUserLogged$.next(this.settings.loggedIn);
   }
 
@@ -45,34 +59,61 @@ export class SettingsService {
         };
   }
 
+  prepareSettingsUpdateHandler() {
+    this.updateSettings$.unsubscribe();
+    this.updateSettings$ = new Subject();
+
+    this.updateSettings$.pipe(first()).subscribe(async () => {
+      this.settingsReady$.next(false);
+
+      let settingsFromDb = null;
+
+      if (this.settings.loggedIn) {
+        try {
+          settingsFromDb =
+            (await this.db.get(
+              this.collection,
+              this.settings.user!.id as string
+            )) ?? this.settings;
+        } catch (e) {
+          // No settings on db yet, let's create them
+          settingsFromDb = this.settings;
+        }
+        await this.saveSettingsToDb();
+
+        if (
+          this.encryption.needToUpdateKey(settingsFromDb.challenge) &&
+          false === this.isOpen
+        ) {
+          const { challenge } = await this.forceKeyUpdateModal(
+            settingsFromDb.challenge
+          );
+          this.settings.challenge = challenge;
+          await this.saveSettingsToDb();
+          this.saveSettingsLocally();
+        }
+      }
+
+      this.settingsReady$.next(true);
+
+      this.isSynced$.next(this.settings.loggedIn); // Need to be false if logged out, for a new sync upon login
+    });
+  }
+
+  doSyncSettings(): void {
+    this.updateSettings$.next();
+  }
+
   async syncSettingsFromDb(): Promise<void> {
-    let settingsFromDb = null;
-
-    if (this.settings.loggedIn) {
-      try {
-        settingsFromDb =
-          (await this.db.get(
-            this.collection,
-            this.settings.user!.id as string
-          )) ?? this.settings;
-      } catch (e) {
-        // No settings on db yet, let's create them
-        settingsFromDb = this.settings;
-      }
-      await this.saveSettingsToDb();
-
-      if (
-        this.encryption.needToUpdateKey(settingsFromDb.challenge) &&
-        false === this.isOpen
-      ) {
-        const { challenge } = await this.forceKeyUpdateModal(
-          settingsFromDb.challenge
-        );
-        this.settings.challenge = challenge;
-        this.saveSettingsToDb();
-        this.saveSettingsLocally();
-      }
-    }
+    return new Promise((resolve) => {
+      this.isSynced$.subscribe({
+        next: (isSynced) => {
+          if (true === isSynced) {
+            resolve();
+          }
+        },
+      });
+    });
   }
 
   async forceKeyUpdateModal(challenge: string): Promise<{ challenge: string }> {

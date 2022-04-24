@@ -44,6 +44,13 @@ export class TodosService {
     this.syncTodos$.next();
   }
 
+  clearCompleted(): void {
+    const cleanedTodos = this.todos.filter((todo) => !todo.completed);
+    this.todos.splice(0, this.todos.length, ...cleanedTodos);
+    this.backgroundSync = false;
+    this.syncTodos$.next();
+  }
+
   toggleCompleted(todo: Todo, completed: boolean): void {
     todo.completed = completed;
     this.backgroundSync = false;
@@ -57,17 +64,30 @@ export class TodosService {
     this.syncTodos$.next();
   }
 
-  async syncTodos(): Promise<void> {
+  async syncTodos(pull = false): Promise<void> {
+    this.saveTodosLocally();
+
     if (false === this.settings.loggedIn) {
       return;
     }
+
+    await new Promise<void>((resolve) => {
+      this.settingsService.settingsReady$.subscribe({
+        next: (isReady) => {
+          if (isReady) {
+            resolve();
+          }
+        },
+      });
+    });
 
     const userId = this.settings.user?.id as string;
     const todoPath = `/todos/${userId}`;
     const stringifiedTodos = JSON.stringify(this.todos);
     const todosHash = Md5.hashStr(stringifiedTodos);
+    let fetchedTodos: string = '';
+    let decryptedTodos: string = '';
     let existingTodos: Todo[] = [];
-    this.saveTodosLocally();
 
     try {
       // Try to prevent a redundant update
@@ -75,26 +95,26 @@ export class TodosService {
         ((await this.storageService.getMetadata(todoPath)) as any)
           .customMetadata ?? {};
 
-      console.log(`Existing hash: ${existingHash}, new hash: ${todosHash}`);
       if (existingHash === todosHash) {
         return;
       }
 
-      const fetchedTodos = await this.storageService.getRaw(todoPath);
-      const decryptedTodos = this.encryptionService.decrypt(fetchedTodos);
+      fetchedTodos = await this.storageService.getRaw(todoPath);
+    } catch {
+      // Didn't found previously synced todos
+    }
 
-      if (decryptedTodos) {
+    try {
+      if (fetchedTodos.length) {
+        decryptedTodos = this.encryptionService.decrypt(fetchedTodos);
         existingTodos = JSON.parse(decryptedTodos);
-      } else {
-        throw new Error(TodosErrors.CantDecryptTodos);
       }
-    } catch (error: any) {
-      if (
-        TodosErrors.CantDecryptTodos === error.message ||
-        FirebaseErrors.FileNotFound === error.code
-      ) {
-        await this.settingsService.syncSettingsFromDb();
-      }
+    } catch {
+      // Failed to decrypt, shouldn't happen ¯\_(ツ)_/¯
+    }
+
+    if (false === pull) {
+      existingTodos = []; // we will override the saved existing
     }
 
     const uniqueTodos = new Map();

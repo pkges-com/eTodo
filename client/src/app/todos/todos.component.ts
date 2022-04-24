@@ -20,9 +20,12 @@ export class TodosComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsService.isUserLogged$.subscribe((isLogged) => {
-      console.log(`isLogged: ${isLogged}`);
+      if ('boolean' !== typeof isLogged) {
+        return;
+      }
+
       if (isLogged) {
-        this.todosService.syncTodos();
+        this.todosService.syncTodos(true);
       } else {
         this.todosService.removeAndSyncLocally();
       }
@@ -51,11 +54,19 @@ export class TodosComponent implements OnInit {
     }
   }
 
+  clearCompleted(): void {
+    this.todosService.clearCompleted();
+  }
+
   toggleCompleted(todo: Todo, completed: boolean): void {
     this.todosService.toggleCompleted(todo, completed);
   }
 
   drop({ previousIndex, currentIndex }: CdkDragDrop<string[]>) {
     this.todosService.reorderTodos(previousIndex, currentIndex);
+  }
+
+  get hasDoneTodos(): boolean {
+    return this.todos.some((todo) => todo.completed);
   }
 }
