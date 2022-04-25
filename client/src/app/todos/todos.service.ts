@@ -118,7 +118,10 @@ export class TodosService {
     }
 
     const uniqueTodos = new Map();
-    [...this.todos, ...existingTodos].forEach((todo, index) => {
+    const todosToSync = pull
+      ? [...existingTodos, ...this.todos]
+      : [...this.todos, ...existingTodos];
+    todosToSync.forEach((todo, index) => {
       if (!uniqueTodos.has(todo.id)) {
         uniqueTodos.set(todo.id, todo);
       }
