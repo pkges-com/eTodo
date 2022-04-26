@@ -127,6 +127,7 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
   }
 
   updateTheme(): void {
+    document.body.classList.toggle('dark', this.settings.darkMode);
     this.themeStyleElement.href = `/themes/ng-zorro-antd${
       this.settings.darkMode ? '.dark' : ''
     }.min.css`;
