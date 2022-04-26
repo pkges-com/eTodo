@@ -11,6 +11,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { StorageService } from '../core/utils/storage.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { SelectableTextInCdkDragDirective } from '../core/utils/selectable-text.directive';
 
 @NgModule({
   imports: [
@@ -23,7 +24,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzButtonModule,
     NzGridModule,
   ],
-  declarations: [TodosComponent],
+  declarations: [TodosComponent, SelectableTextInCdkDragDirective],
   providers: [TodosService, StorageService],
   exports: [TodosComponent],
 })
