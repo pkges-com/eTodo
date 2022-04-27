@@ -121,7 +121,7 @@ export class TodosService {
 
     const uniqueTodos = new Map();
     const todosToSync = pull
-      ? [...existingTodos, ...this.todos]
+      ? [...existingTodos]
       : [...this.todos, ...existingTodos];
     todosToSync.forEach((todo, index) => {
       if (!uniqueTodos.has(todo.id)) {
