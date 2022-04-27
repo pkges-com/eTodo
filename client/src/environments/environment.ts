@@ -1,5 +1,8 @@
+declare const require: any;
+
 export const environment = {
   production: false,
+  appVersion: require('../../../package.json').version,
   firebaseConfig: {
     apiKey: 'AIzaSyBXScCuUCkeN8-F5LUhJVOgX79iXwcJRGY',
     authDomain: 'etodo-a2887.firebaseapp.com',

@@ -9,3 +9,22 @@
 <div class="app-viewport">
   <router-outlet></router-outlet>
 </div>
+
+<footer>
+  <span>{{ "Footer.version" | translate }}: {{ version }}</span>
+  <span>
+    <span>{{ "Footer.last_sync" | translate }}:</span>
+    <span class="sync-time" *ngIf="isLoggedIn && lastSync">{{
+      lastSync | date: "HH:mm:ss - MM/dd/yy"
+    }}</span>
+    <div class="spinner" *ngIf="isLoggedIn && !lastSync">
+      <ng-template #indicatorTemplate
+        ><i nz-icon nzType="loading"></i
+      ></ng-template>
+      <nz-spin nzSimple [nzIndicator]="indicatorTemplate"></nz-spin>
+    </div>
+    <span class="login-to-sync" *ngIf="!isLoggedIn">{{
+      "Footer.login_to_sync" | translate
+    }}</span>
+  </span>
+</footer>

@@ -24,6 +24,11 @@ export const cusomTranslationEn = {
     input_placeholder: 'What needs to be done?',
     clear_completed: 'Clear completed Todos',
   },
+  Footer: {
+    version: 'Version',
+    last_sync: 'Last Sync',
+    login_to_sync: 'Login to sync',
+  },
 };
 
 export const cusomTranslationHe = {
@@ -39,6 +44,11 @@ export const cusomTranslationHe = {
     todos: 'משימות',
     input_placeholder: 'מה תרצה לעשות היום?',
     clear_completed: 'נקה משימות שהסתיימו',
+  },
+  Footer: {
+    version: 'גרסה',
+    last_sync: 'סנכרון אחרון',
+    login_to_sync: 'התחבר כדי לסנכרן',
   },
 };
 

@@ -10,6 +10,7 @@ import { NzI18nModule } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { TranslationPipe } from './utils/translation.pipe';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { TranslationPipe } from './utils/translation.pipe';
     HttpClientModule,
     NzI18nModule,
     NzModalModule,
+    NzSpinModule,
   ],
   declarations: [AutofocusDirective, TranslationPipe],
   providers: [UtilsService, EncryptionService],
@@ -28,6 +30,7 @@ import { TranslationPipe } from './utils/translation.pipe';
     AutofocusDirective,
     NzI18nModule,
     NzIconModule,
+    NzSpinModule,
     TranslationPipe,
   ],
 })

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5';
 import { Todo } from './utils/types';
 import { UtilsService } from '../core/utils.service';
-import { TodosErrors, FirebaseErrors } from '../core/errors';
 import { EncryptionService } from '../core/utils/encryption.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/utils/types';
@@ -14,6 +13,7 @@ export class TodosService {
   private todos: Todo[] = JSON.parse(localStorage.getItem('todos') || '[]');
   private syncTodos$: Subject<void> = new Subject<void>();
   private backgroundSync = true;
+  lastSync: Date | null = null;
 
   constructor(
     private utilsService: UtilsService,
@@ -65,6 +65,7 @@ export class TodosService {
   }
 
   async syncTodos(pull = false): Promise<void> {
+    this.lastSync = null;
     this.saveTodosLocally();
 
     if (false === this.settings.loggedIn) {
@@ -96,6 +97,7 @@ export class TodosService {
           .customMetadata ?? {};
 
       if (existingHash === todosHash) {
+        this.lastSync = new Date();
         return;
       }
 
@@ -142,6 +144,7 @@ export class TodosService {
       hash: newHash,
     });
 
+    this.lastSync = new Date();
     this.backgroundSync = true;
   }
 

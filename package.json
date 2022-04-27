@@ -1,6 +1,7 @@
 {
   "name": "eTodo",
   "description": "An awesome, powerful, encrypted, but yet simple Todo - e stands for encrypted 🔒",
+  "version": "0.1.0",
   "scripts": {
     "ng": "node_modules/.bin/ng",
     "start": "node_modules/.bin/ng serve",

@@ -10,3 +10,27 @@ nz-page-header {
 .app-viewport {
   margin-top: 74px;
 }
+footer {
+  position: fixed;
+  bottom: 0;
+  padding: 12px 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  .sync-time {
+    font-size: 12px;
+    color: #16992c;
+    margin: 0 5px;
+  }
+
+  .login-to-sync {
+    margin: 0 5px;
+  }
+
+  .spinner {
+    display: inline-block;
+    margin: 0 8px;
+  }
+}
