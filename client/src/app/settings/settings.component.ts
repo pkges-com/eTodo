@@ -80,6 +80,7 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
     this.firebaseAuth.authState.subscribe(
       (user) => {
         const userObj = user?.toJSON?.() as any;
+        const isLoggedOut = !userObj && this.settings.loggedIn;
 
         if (userObj) {
           this.settingsService.setUser(
@@ -94,7 +95,8 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
               })
             )
           );
-        } else {
+        } else if (isLoggedOut) {
+          // we don't want to reset all data in cases not logged in and refreshing the page
           this.encryptionService.updateKey('');
           this.settingsService.setUser(null);
         }
