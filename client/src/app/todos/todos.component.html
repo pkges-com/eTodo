@@ -4,14 +4,16 @@
   [nzBordered]="true"
   (cdkDropListDropped)="drop($event)"
 >
-  <nz-list-header>
-    <input
-      nz-input
-      placeholder="{{ 'Todos.input_placeholder' | translate }}"
-      [nzBorderless]="true"
-      (keydown)="addTodo($event)"
-    />
-  </nz-list-header>
+  <div class="fixed-input-container">
+    <nz-list-header>
+      <input
+        nz-input
+        placeholder="{{ 'Todos.input_placeholder' | translate }}"
+        [nzBorderless]="true"
+        (keydown)="addTodo($event)"
+      />
+    </nz-list-header>
+  </div>
   <nz-list-item
     cdkDrag
     [cdkDragStartDelay]="200"

@@ -1,7 +1,6 @@
 {
   "name": "eTodo",
-  "description": "A awesome, powerful, encrypted, but yet simple Todo - e stands for encrypted 🔒",
-  "version": "0.0.0",
+  "description": "An awesome, powerful, encrypted, but yet simple Todo - e stands for encrypted 🔒",
   "scripts": {
     "ng": "node_modules/.bin/ng",
     "start": "node_modules/.bin/ng serve",
@@ -32,7 +31,7 @@
     "firebase": "^9.6.10",
     "firebaseui": "^6.0.1",
     "firebaseui-angular": "^6.1.1",
-    "ng-zorro-antd": "^13.1.1",
+    "ng-zorro-antd": "~13.2",
     "prettier": "^2.6.2",
     "rxjs": "~7.5.0",
     "ts-md5": "^1.2.11",

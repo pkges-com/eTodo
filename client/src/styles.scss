@@ -1,4 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+body,
+html {
+  height: initial !important;
+}
+
 body {
   overflow-x: hidden;
 
@@ -9,8 +13,36 @@ body {
   }
 
   &.dark {
+    nz-page-header {
+      background: black;
+    }
+
+    .fixed-input-container {
+      background: black;
+
+      > nz-list-header {
+        border: 1px solid #303030;
+        border-right-color: #434343;
+        border-left-color: #434343;
+      }
+    }
+
     .cdk-drag-preview {
       background: black;
+    }
+
+    footer {
+      background: black;
+    }
+  }
+
+  footer {
+    background: white;
+  }
+
+  .fixed-input-container {
+    > nz-list-header {
+      border: 1px solid #d9d9d9;
     }
   }
 }

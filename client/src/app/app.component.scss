@@ -1,0 +1,12 @@
+nz-page-header {
+  position: fixed;
+  top: 0;
+  z-index: 11;
+  height: 74px;
+  background: white;
+  width: 100%;
+}
+
+.app-viewport {
+  margin-top: 74px;
+}
