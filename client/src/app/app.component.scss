@@ -5,6 +5,11 @@ nz-page-header {
   height: 74px;
   background: white;
   width: 100%;
+
+  .logo {
+    height: 30px;
+    vertical-align: top;
+  }
 }
 
 .app-viewport {
