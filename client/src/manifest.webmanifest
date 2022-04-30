@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "short_name": "client",
+  "name": "eTodo",
+  "short_name": "eTodo",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
