@@ -38,14 +38,17 @@
                 "glob": "**/*",
                 "input": "../node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
-              }
+              },
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "../node_modules/firebaseui/dist/firebaseui.css",
               "src/styles.scss",
               "src/variables.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
