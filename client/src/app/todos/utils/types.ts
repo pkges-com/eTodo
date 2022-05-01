@@ -7,6 +7,7 @@ export interface Tag {
 export interface Todo {
   id: string;
   title: string;
+  synced: boolean;
   completed: boolean;
   editing?: boolean;
   tags?: Tag[];

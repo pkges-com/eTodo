@@ -36,6 +36,7 @@ export class TodosService {
     const newTodo = {
       id: this.utilsService.generateUUID(),
       title,
+      synced: false,
       completed: false,
     };
 
@@ -119,9 +120,10 @@ export class TodosService {
       existingTodos = []; // we will override the saved existing
     }
 
+    const unSyncedTodos = this.todos.filter((todo) => !todo.synced);
     const uniqueTodos = new Map();
     const todosToSync = pull
-      ? [...existingTodos]
+      ? [...existingTodos, ...unSyncedTodos]
       : [...this.todos, ...existingTodos];
     todosToSync.forEach((todo, index) => {
       if (!uniqueTodos.has(todo.id)) {
@@ -135,6 +137,9 @@ export class TodosService {
       ...Array.from(uniqueTodos.values())
     );
     this.saveTodosLocally();
+    todosToSync.forEach((todo) => {
+      todo.synced = true;
+    });
     const newHash = Md5.hashStr(JSON.stringify(this.todos));
     let encryptedTodos = this.encryptionService.encrypt(
       JSON.stringify(this.todos)
