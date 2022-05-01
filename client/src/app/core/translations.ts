@@ -35,7 +35,7 @@ export const cusomTranslationHe = {
   ...he_IL,
   Settings: {
     login: 'כניסה מהירה',
-    logout: 'יציאה',
+    logout: 'התנתק',
     dark_mode: 'מצב לילה',
     language: 'שפה',
     right_to_left: 'כיוון ימין לשמאל',
