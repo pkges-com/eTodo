@@ -18,7 +18,7 @@
     cdkDrag
     [cdkDragStartDelay]="200"
     [class.editing]="todo.editing"
-    *ngFor="let todo of todos"
+    *ngFor="let todo of todos; let i = index"
   >
     <nz-row
       class="todo-row"
@@ -31,7 +31,7 @@
           type="checkbox"
           nz-checkbox
           [ngModel]="todo.completed"
-          (ngModelChange)="toggleCompleted(todo, $event)"
+          (ngModelChange)="toggleCompleted(i, $event)"
         ></label>
       </div>
       <span *ngIf="!todo.editing; else editTodoInput" selectableTextInCdkDrag>{{

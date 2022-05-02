@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { TodosService } from './todos.service';
@@ -12,6 +12,14 @@ import { Todo } from './utils/types';
 })
 export class TodosComponent implements OnInit {
   todos: Todo[] = this.todosService.getTodos();
+  lastCompleteToggle = -1;
+  private holdingShift = false;
+
+  @HostListener('keydown', ['$event'])
+  @HostListener('keyup', ['$event'])
+  onClick(event: MouseEvent): void {
+    this.holdingShift = event.shiftKey;
+  }
 
   constructor(
     protected todosService: TodosService,
@@ -58,8 +66,15 @@ export class TodosComponent implements OnInit {
     this.todosService.clearCompleted();
   }
 
-  toggleCompleted(todo: Todo, completed: boolean): void {
-    this.todosService.toggleCompleted(todo, completed);
+  toggleCompleted(fromIndex: number, completed: boolean): void {
+    const isToggleRange = this.holdingShift && -1 < this.lastCompleteToggle;
+    const toIndex = isToggleRange ? this.lastCompleteToggle : fromIndex;
+    this.todosService.toggleCompleted(
+      Math.min(fromIndex, toIndex),
+      Math.max(fromIndex, toIndex),
+      completed
+    );
+    this.lastCompleteToggle = fromIndex;
   }
 
   drop({ previousIndex, currentIndex }: CdkDragDrop<string[]>) {

@@ -52,8 +52,14 @@ export class TodosService {
     this.syncTodos$.next();
   }
 
-  toggleCompleted(todo: Todo, completed: boolean): void {
-    todo.completed = completed;
+  toggleCompleted(
+    fromIndex: number,
+    toIndex: number,
+    completed: boolean
+  ): void {
+    for (let i = fromIndex; i <= toIndex; i++) {
+      this.todos[i].completed = completed;
+    }
     this.backgroundSync = false;
     this.syncTodos$.next();
   }
