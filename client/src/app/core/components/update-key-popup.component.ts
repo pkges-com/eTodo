@@ -7,10 +7,10 @@ import { EncryptionService } from '../utils/encryption.service';
   template: `
     <form (ngSubmit)="submitForm()">
       <span *ngIf="challenge">
-        על מנת להתחבר בהצלחה, נא להזין את הקוד הזנת בעבר להצפנת ה-Todo שלך
+        {{ 'UpdateKeyPopup.decrypt_description' | translate }}
       </span>
       <span *ngIf="!challenge">
-        נא להזין קוד שבעזרתו נוכל להצפין את רשימת ה-Todo שלך
+        {{ 'UpdateKeyPopup.encrypt_description' | translate }}
       </span>
       <nz-input-group class="key-input" [nzPrefix]="prefixTemplateUser">
         <input id="key" name="key" type="password" nz-input [(ngModel)]="key" />
@@ -20,11 +20,13 @@ import { EncryptionService } from '../utils/encryption.service';
       ></ng-template>
 
       <span *ngIf="invalidMessage" nz-typography nzType="danger">{{
-        invalidMessage
+        invalidMessage | translate
       }}</span>
 
       <div class="actions">
-        <button type="submit" nz-button nzType="primary">שמירה</button>
+        <button type="submit" nz-button nzType="primary">
+          {{ 'UpdateKeyPopup.save' | translate }}
+        </button>
       </div>
     </form>
   `,
@@ -63,7 +65,7 @@ export class UpdateKeyPopupComponent {
     this.invalidMessage = '';
 
     if (3 > this.key.trim().length) {
-      this.invalidMessage = 'נא להזין קוד של לפחות 3 תווים';
+      this.invalidMessage = 'UpdateKeyPopup.invalid_key';
       return;
     }
 
@@ -72,7 +74,7 @@ export class UpdateKeyPopupComponent {
     if (newChallenge) {
       const decription = this.encryption.decrypt(newChallenge);
       if ('challenge' !== decription) {
-        this.invalidMessage = 'קוד לא תקין, נא לנסות שוב';
+        this.invalidMessage = 'UpdateKeyPopup.incorrect_key';
 
         return;
       }

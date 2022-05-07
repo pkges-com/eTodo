@@ -148,6 +148,8 @@ export class SettingsComponent implements AfterViewInit, OnDestroy {
 
   updateDirection(): void {
     document.body.dir = this.direction;
+    document.body.style.textAlign =
+      this.direction === 'rtl' ? 'right' : 'initial';
   }
 
   ngOnDestroy(): void {

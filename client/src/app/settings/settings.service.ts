@@ -1,17 +1,12 @@
 import { Injectable, OnInit } from '@angular/core';
-import {
-  BehaviorSubject,
-  first,
-  Observable,
-  Subject,
-  Subscription,
-} from 'rxjs';
+import { BehaviorSubject, first, Subject } from 'rxjs';
 
 import { Settings } from './utils/types';
 import { DbService } from '../core/utils/db.service';
 import { EncryptionService } from '../core/utils/encryption.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UpdateKeyPopupComponent } from '../core/components/update-key-popup.component';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
 
 @Injectable()
 export class SettingsService {
@@ -30,7 +25,8 @@ export class SettingsService {
   constructor(
     private db: DbService,
     private modal: NzModalService,
-    private encryption: EncryptionService
+    private encryption: EncryptionService,
+    private translationService: NzI18nService
   ) {
     this.settings = this.getLocalSettingsOrDefault();
   }
@@ -79,7 +75,6 @@ export class SettingsService {
           // No settings on db yet, let's create them
           settingsFromDb = this.settings;
         }
-        await this.saveSettingsToDb();
 
         if (
           this.encryption.needToUpdateKey(settingsFromDb.challenge) &&
@@ -89,9 +84,10 @@ export class SettingsService {
             settingsFromDb.challenge
           );
           this.settings.challenge = challenge;
-          await this.saveSettingsToDb();
           this.saveSettingsLocally();
         }
+
+        await this.saveSettingsToDb(true);
       }
 
       this.settingsReady$.next(true);
@@ -120,7 +116,7 @@ export class SettingsService {
     this.isOpen = true;
     return new Promise((resolve) => {
       const modal = this.modal.create({
-        nzTitle: 'Challenge',
+        nzTitle: this.translationService.translate('UpdateKeyPopup.title'),
         nzContent: UpdateKeyPopupComponent,
         nzComponentParams: {
           challenge,
@@ -139,8 +135,11 @@ export class SettingsService {
     });
   }
 
-  async saveSettingsToDb(): Promise<void> {
-    if (this.settings.loggedIn && !this.saveInProgress) {
+  async saveSettingsToDb(forceSettingsReady = false): Promise<void> {
+    const isSettingsReady =
+      forceSettingsReady || true === this.settingsReady$.getValue();
+
+    if (isSettingsReady && this.settings.loggedIn && !this.saveInProgress) {
       try {
         this.saveInProgress = true;
 
