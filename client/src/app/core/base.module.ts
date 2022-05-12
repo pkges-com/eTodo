@@ -11,6 +11,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { TranslationPipe } from './utils/translation.pipe';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzI18nModule,
     NzModalModule,
     NzSpinModule,
+    NzAlertModule,
   ],
   declarations: [AutofocusDirective, TranslationPipe],
   providers: [UtilsService, EncryptionService],
@@ -31,6 +33,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzI18nModule,
     NzIconModule,
     NzSpinModule,
+    NzAlertModule,
     TranslationPipe,
   ],
 })

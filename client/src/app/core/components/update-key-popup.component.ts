@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { SettingsService } from 'src/app/settings/settings.service';
 import { EncryptionService } from '../utils/encryption.service';
 
 @Component({
@@ -23,6 +24,19 @@ import { EncryptionService } from '../utils/encryption.service';
         invalidMessage | translate
       }}</span>
 
+      <nz-row>
+        <label name="override" nz-checkbox [(ngModel)]="isOverride">
+          {{ 'UpdateKeyPopup.override_description' | translate }}
+        </label>
+      </nz-row>
+      <nz-row *ngIf="isOverride">
+        <nz-alert
+          nzShowIcon
+          nzMessage="{{ 'UpdateKeyPopup.override_warning' | translate }}"
+          nzType="warning"
+        ></nz-alert>
+      </nz-row>
+
       <div class="actions">
         <button type="submit" nz-button nzType="primary">
           {{ 'UpdateKeyPopup.save' | translate }}
@@ -32,8 +46,11 @@ import { EncryptionService } from '../utils/encryption.service';
   `,
   styles: [
     `
-      .key-input {
-        margin-top: 16px;
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
       }
       #key {
         direction: ltr;
@@ -41,19 +58,24 @@ import { EncryptionService } from '../utils/encryption.service';
       .actions {
         display: flex;
         justify-content: flex-end;
-        margin-top: 16px;
+        margin-top: 10px;
       }
     `,
   ],
 })
 export class UpdateKeyPopupComponent {
   @Input() challenge?: string;
+  @HostBinding('dir') get isRrtl() {
+    return this.settingsService.getSettings().rtl ? 'rtl' : 'ltr';
+  }
   invalidMessage: string = '';
+  isOverride = false;
   key: string = '';
 
   constructor(
     private modal: NzModalRef,
-    private encryption: EncryptionService
+    private encryption: EncryptionService,
+    private settingsService: SettingsService
   ) {}
 
   destroyModal(): void {
@@ -61,7 +83,7 @@ export class UpdateKeyPopupComponent {
   }
 
   async submitForm() {
-    let newChallenge = this.challenge ?? '';
+    let resultChallenge = this.challenge ?? '';
     this.invalidMessage = '';
 
     if (3 > this.key.trim().length) {
@@ -71,17 +93,19 @@ export class UpdateKeyPopupComponent {
 
     this.encryption.updateKey(this.key);
 
-    if (newChallenge) {
-      const decription = this.encryption.decrypt(newChallenge);
+    if (resultChallenge && !this.isOverride) {
+      const decription = this.encryption.decrypt(resultChallenge);
       if ('challenge' !== decription) {
         this.invalidMessage = 'UpdateKeyPopup.incorrect_key';
 
         return;
       }
     } else {
-      newChallenge = this.encryption.encrypt('challenge');
+      resultChallenge = this.encryption.encrypt('challenge');
     }
 
-    this.modal.destroy({ challenge: newChallenge });
+    this.modal.destroy({
+      challenge: resultChallenge,
+    });
   }
 }

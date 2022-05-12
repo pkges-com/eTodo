@@ -23,6 +23,9 @@ export const cusomTranslationEn = {
     todos: 'Todos',
     input_placeholder: 'What needs to be done?',
     clear_completed: 'Clear completed Todos',
+    refresh_title: 'Refresh Required',
+    refresh_message:
+      'Your local configurations are out of sync with the server. This solvable by refreshing the page.',
   },
   Footer: {
     version: 'Version',
@@ -37,6 +40,10 @@ export const cusomTranslationEn = {
       'Please enter your previous password to decrypt your data',
     invalid_key: 'The password should contain at least 3 characters',
     incorrect_key: 'The password is incorrect, please try again',
+    override_description:
+      "I don't recall my previous password, override it with the new one",
+    override_warning:
+      'Warning: this will override the remote data with your local data',
     save: 'Save',
   },
 };
@@ -54,6 +61,9 @@ export const cusomTranslationHe = {
     todos: 'משימות',
     input_placeholder: 'מה תרצה לעשות היום?',
     clear_completed: 'נקה משימות שהסתיימו',
+    refresh_title: 'נדרש רענון לדף',
+    refresh_description:
+      'נראה שההגדרות המקומיות לא מסונכרנות עם ההגדרות בשרת, ניתן לסדר זאת לאחר רענון הדף',
   },
   Footer: {
     version: 'גרסה',
@@ -65,8 +75,12 @@ export const cusomTranslationHe = {
     encrypt_description: 'נא להזין סיסמה, שבעזרתה נוכל להצפין את המידע שלך',
     decrypt_description:
       'נא להזין את הסיסמה שבחרת בעבר על מנת לפענח את המידע שלך',
-    invalid_key: 'נא להזין קוד של לפחות 3 תווים',
-    incorrect_key: 'קוד לא נכון, נא לנסות שוב',
+    invalid_key: 'נא להזין סיסמה של לפחות 3 תווים',
+    incorrect_key: 'סיסמה לא נכונה, נא לנסות שוב',
+    override_description:
+      'לא זוכר את הסיסמה הקודמת, מעוניין לדרוס אותה עם הסיסמה החדשה',
+    override_warning:
+      'שים לב: פעולה זו עלולה לדרוס את המידע ששמור בענן עם המידע המקומי שלך',
     save: 'שמירה',
   },
 };

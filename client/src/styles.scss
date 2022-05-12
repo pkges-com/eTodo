@@ -10,6 +10,11 @@ body {
     .cdk-drag-preview {
       direction: rtl;
     }
+
+    .ant-alert-icon {
+      margin-right: initial;
+      margin-left: 8px;
+    }
   }
 
   &.dark {

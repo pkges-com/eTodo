@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { TodosService } from './todos.service';
@@ -10,7 +10,7 @@ import { Todo } from './utils/types';
   templateUrl: './todos.component.html',
   styleUrls: ['./todos.component.scss'],
 })
-export class TodosComponent implements OnInit {
+export class TodosComponent implements OnInit, OnDestroy {
   todos: Todo[] = this.todosService.getTodos();
   lastCompleteToggle = -1;
   private holdingShift = false;
@@ -33,7 +33,7 @@ export class TodosComponent implements OnInit {
       }
 
       if (isLogged) {
-        this.todosService.syncTodos(true);
+        this.todosService.syncTodos(true, true);
       } else {
         this.todosService.removeAndSyncLocally();
       }
@@ -83,5 +83,9 @@ export class TodosComponent implements OnInit {
 
   get hasDoneTodos(): boolean {
     return this.todos.some((todo) => todo.completed);
+  }
+
+  ngOnDestroy(): void {
+    this.todosService.destroy();
   }
 }

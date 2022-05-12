@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { debounce, Subject, timer } from 'rxjs';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Md5 } from 'ts-md5';
+
 import { Todo } from './utils/types';
 import { UtilsService } from '../core/utils.service';
 import { EncryptionService } from '../core/utils/encryption.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/utils/types';
-import { debounce, Subject, timer } from 'rxjs';
 import { StorageService } from '../core/utils/storage.service';
 
 @Injectable()
@@ -19,12 +22,14 @@ export class TodosService {
     private utilsService: UtilsService,
     private encryptionService: EncryptionService,
     private storageService: StorageService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private translationService: NzI18nService,
+    private modal: NzModalService
   ) {
     this.syncTodos$
       .pipe(debounce(() => timer(this.backgroundSync ? 10 * 60000 : 5000))) // 10 minutes on background, 5 seconds on action
       .subscribe(() => {
-        this.syncTodos();
+        this.syncTodos(this.backgroundSync);
       });
   }
 
@@ -71,7 +76,7 @@ export class TodosService {
     this.syncTodos$.next();
   }
 
-  async syncTodos(pull = false): Promise<void> {
+  async syncTodos(pull = false, isInitial = false): Promise<void> {
     this.lastSync = null;
     this.saveTodosLocally();
 
@@ -119,7 +124,24 @@ export class TodosService {
         existingTodos = JSON.parse(decryptedTodos);
       }
     } catch {
-      // Failed to decrypt, shouldn't happen ¯\_(ツ)_/¯
+      if (false === isInitial) {
+        // Only if that's not the first sync
+        this.modal.warning({
+          nzTitle: this.translationService.translate('Todos.refresh_title'),
+          nzContent: this.translationService.translate(
+            'Todos.refresh_description'
+          ),
+          nzMaskClosable: false,
+          nzCancelDisabled: true,
+          nzClosable: false,
+          nzKeyboard: false,
+          nzOnOk: () => {
+            window.location.reload();
+          },
+        });
+
+        await new Promise(() => {}); // Wait for modal forever until a refresh
+      }
     }
 
     if (false === pull) {
@@ -157,6 +179,7 @@ export class TodosService {
 
     this.lastSync = new Date();
     this.backgroundSync = true;
+    this.syncTodos$.next();
   }
 
   removeAndSyncLocally() {
@@ -170,5 +193,9 @@ export class TodosService {
 
   get settings(): Settings {
     return this.settingsService.getSettings();
+  }
+
+  destroy(): void {
+    this.syncTodos$.unsubscribe();
   }
 }
