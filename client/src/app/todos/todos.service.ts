@@ -110,6 +110,8 @@ export class TodosService {
 
       if (existingHash === todosHash) {
         this.lastSync = new Date();
+        this.backgroundSync = true;
+        this.syncTodos$.next();
         return;
       }
 
